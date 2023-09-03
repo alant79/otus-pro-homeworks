@@ -25,7 +25,7 @@ tasks.shadowJar {
     archiveVersion.set('0.1')
     archiveClassifier.set('')
     manifest {
-        attributes 'Main-Class': 'ru.otus.pro.hw01.gradle'
+        attributes 'Main-Class': 'ru.otus.pro.hw01.gradle.HelloOtus'
     }
 }
 
