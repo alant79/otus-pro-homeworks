@@ -1,2 +1,6 @@
 rootProject.name = 'otus-pro-homeworks'
+include 'hw01-gradle'
+include 'hw03-generics'
+include 'hw05-annotations'
+include 'hw07-atmMachine'
 
