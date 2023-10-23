@@ -41,4 +41,13 @@ public class MoneyBoxImpl implements MoneyBox{
         return this.capacity - this.quantity;
     }
 
+    @Override
+    public String toString() {
+        return "MoneyBoxImpl{" +
+                "typeOfBanknote=" + typeOfBanknote.getValue() +
+                ", currency=" + typeOfBanknote.getCurrency() +
+                ", quantity=" + quantity +
+                ", capacity=" + capacity +
+                '}';
+    }
 }

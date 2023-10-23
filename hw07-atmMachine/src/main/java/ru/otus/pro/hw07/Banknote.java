@@ -25,4 +25,12 @@ public class Banknote {
         this.value = value;
         this.currency = currency;
     }
+
+    @Override
+    public String toString() {
+        return "Banknote{" +
+                "value=" + value +
+                ", currency=" + currency +
+                '}';
+    }
 }

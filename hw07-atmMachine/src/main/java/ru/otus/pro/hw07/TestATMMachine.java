@@ -6,6 +6,9 @@ import ru.otus.pro.hw07.moneyBox.MoneyBoxImpl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class TestATMMachine {
     public static void main(String[] args) {
 
@@ -37,11 +40,14 @@ public class TestATMMachine {
         packageOfMoney.put(rub5000, 5);
         atmMachine.putMoney(packageOfMoney);
 
-        System.out.println(atmMachine.getTotalMoney(curRUB));
+        Logger logger = LoggerFactory.getLogger(TestATMMachine.class);
+        logger.info(String.valueOf(atmMachine.getTotalMoney(curRUB)));
 
         packageOfMoney.clear();
         packageOfMoney = atmMachine.getMoney(curRUB, 32000);
-        System.out.println(packageOfMoney);
-        System.out.println(atmMachine.getTotalMoney(curRUB));
+        logger.info(String.valueOf(packageOfMoney));
+
+        logger.info(String.valueOf(atmMachine.getTotalMoney(curRUB)));
+
     }
 }
