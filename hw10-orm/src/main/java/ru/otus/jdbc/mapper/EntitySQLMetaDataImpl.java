@@ -12,11 +12,11 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
 
     @Override
     public String getSelectAllSql() {
-        String fieldsName = "";
-        Boolean flFirst = false;
+        StringBuilder fieldsName = new StringBuilder();
+        boolean flFirst = false;
         for (Field field : (List<Field>) entityMetaData.getAllFields()
         ) {
-            fieldsName = fieldsName + (flFirst == true ? ", " : "") + field.getName();
+            fieldsName = fieldsName.append(flFirst ? ", " : "").append(field.getName());
             flFirst = true;
         }
         return "select " + fieldsName + " from " + entityMetaData.getName();
@@ -24,11 +24,11 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
 
     @Override
     public String getSelectByIdSql() {
-        String fieldsName = "";
-        Boolean flFirst = false;
+        StringBuilder fieldsName = new StringBuilder();
+        boolean flFirst = false;
         for (Field field : (List<Field>) entityMetaData.getAllFields()
         ) {
-            fieldsName = fieldsName + (flFirst == true ? ", " : "") + field.getName();
+            fieldsName = fieldsName.append(flFirst ? ", " : "").append(field.getName());
             flFirst = true;
         }
         return "select " + fieldsName + " from " + entityMetaData.getName() + " where " + entityMetaData.getIdField().getName() + " = ?";
@@ -36,18 +36,18 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
 
     @Override
     public String getInsertSql() {
-        String fieldsName = "";
-        Boolean flFirst = false;
+        StringBuilder fieldsName = new StringBuilder();
+        boolean flFirst = false;
         for (Field field : (List<Field>) entityMetaData.getFieldsWithoutId()
         ) {
-            fieldsName = fieldsName + (flFirst == true ? ", " : "") + field.getName();
+            fieldsName = fieldsName.append(flFirst ? ", " : "").append(field.getName());
             flFirst = true;
         }
-        fieldsName =  "insert into " + entityMetaData.getName() + "(" + fieldsName + ") values (";
+        fieldsName = new StringBuilder("insert into " + entityMetaData.getName() + "(").append(fieldsName).append(") values (");
         flFirst = false;
-        for (Field field : (List<Field>) entityMetaData.getFieldsWithoutId()
+        for (int i = 0; i < entityMetaData.getFieldsWithoutId().size(); i++
         ) {
-            fieldsName = fieldsName + (flFirst == true ? ",?" : "?");
+            fieldsName = fieldsName.append(flFirst == true ? ",?" : "?");
             flFirst = true;
         }
         return fieldsName + ")";
@@ -55,10 +55,10 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
 
     @Override
     public String getUpdateSql() {
-        String fieldsName = "";
+        StringBuilder fieldsName = new StringBuilder();
         for (Field field : (List<Field>) entityMetaData.getFieldsWithoutId()
         ) {
-            fieldsName = fieldsName + field.getName() + " = ? ";
+            fieldsName = fieldsName.append(field.getName()).append(" = ? ");
         }
         return "update " + entityMetaData.getName() + " set " + fieldsName + " where " + entityMetaData.getIdField().getName() + " = ?";
     }

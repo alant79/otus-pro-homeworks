@@ -1,21 +1,22 @@
 package ru.otus.jdbc.mapper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.otus.core.repository.DataTemplate;
 import ru.otus.core.repository.DataTemplateException;
 import ru.otus.core.repository.executor.DbExecutor;
-import ru.otus.crm.model.Client;
 
 import java.lang.reflect.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.function.Function;
 
 public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
     private final DbExecutor dbExecutor;
     private final EntitySQLMetaData entitySQLMetaData;
+    private static final Logger log = LoggerFactory.getLogger(DataTemplateJdbc.class);
 
     public DataTemplateJdbc(DbExecutor dbExecutor, EntitySQLMetaData entitySQLMetaData) {
         this.dbExecutor = dbExecutor;
@@ -26,33 +27,29 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         List<Object> objList = new ArrayList<>();
         Constructor<T> cons = entitySQLMetaData.getEntityClassMetaData().getConstructor();
 
-            for (Field field : (List<Field>) entitySQLMetaData.getEntityClassMetaData().getAllFields()
-            ) {
-                if (field.getType() == String.class) {
-                    try {
-                        objList.add(rs.getString(field.getName()));
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else if (field.getType() == Long.class) {
-                    try {
-                        objList.add(rs.getLong(field.getName()));
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
+        for (Field field : (List<Field>) entitySQLMetaData.getEntityClassMetaData().getAllFields()
+        ) {
+            if (field.getType() == String.class) {
+                try {
+                    objList.add(rs.getString(field.getName()));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    log.info("error findById " + e);
+                }
+            } else if (field.getType() == Long.class) {
+                try {
+                    objList.add(rs.getLong(field.getName()));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    log.info("error findById " + e);
                 }
             }
+        }
 
         Object newInstance;
         try {
-            try {
-                newInstance = cons.newInstance(objList.toArray());
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (InstantiationException e) {
+            newInstance = cons.newInstance(objList.toArray());
+        } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
             throw new RuntimeException(e);
         }
         return (T) newInstance;
@@ -67,7 +64,8 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                     return createObject(rs);
                 }
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+                log.info("error findById " + e);
             }
             return null;
         });
@@ -84,8 +82,10 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                 }
                 return clientList;
             } catch (SQLException e) {
-                throw new DataTemplateException(e);
+                e.printStackTrace();
+                log.info("error findAll " + e);
             }
+            return null;
         }).orElseThrow(() -> new RuntimeException("Unexpected error"));
     }
 
@@ -97,10 +97,10 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
             Map<String, Object> fieldsMap = (Map<String, Object>) method.invoke(client);
             for (Field field : (List<Field>) entitySQLMetaData.getEntityClassMetaData().getFieldsWithoutId()
             ) {
-                if ( fieldsMap.get(field.getName()) == null ) {
+                if (fieldsMap.get(field.getName()) == null) {
                     if (field.getType() == String.class) {
                         objList.add("");
-                    }else if (field.getType() == Long.class) {
+                    } else if (field.getType() == Long.class) {
                         objList.add(0);
                     }
                 } else {
