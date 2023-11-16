@@ -16,7 +16,7 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
         boolean flFirst = false;
         for (Field field : (List<Field>) entityMetaData.getAllFields()
         ) {
-            fieldsName = fieldsName.append(flFirst ? ", " : "").append(field.getName());
+            fieldsName.append(flFirst ? ", " : "").append(field.getName());
             flFirst = true;
         }
         return "select " + fieldsName + " from " + entityMetaData.getName();
@@ -28,7 +28,7 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
         boolean flFirst = false;
         for (Field field : (List<Field>) entityMetaData.getAllFields()
         ) {
-            fieldsName = fieldsName.append(flFirst ? ", " : "").append(field.getName());
+            fieldsName.append(flFirst ? ", " : "").append(field.getName());
             flFirst = true;
         }
         return "select " + fieldsName + " from " + entityMetaData.getName() + " where " + entityMetaData.getIdField().getName() + " = ?";
@@ -40,14 +40,14 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
         boolean flFirst = false;
         for (Field field : (List<Field>) entityMetaData.getFieldsWithoutId()
         ) {
-            fieldsName = fieldsName.append(flFirst ? ", " : "").append(field.getName());
+            fieldsName.append(flFirst ? ", " : "").append(field.getName());
             flFirst = true;
         }
         fieldsName = new StringBuilder("insert into " + entityMetaData.getName() + "(").append(fieldsName).append(") values (");
         flFirst = false;
         for (int i = 0; i < entityMetaData.getFieldsWithoutId().size(); i++
         ) {
-            fieldsName = fieldsName.append(flFirst == true ? ",?" : "?");
+            fieldsName.append(flFirst == true ? ",?" : "?");
             flFirst = true;
         }
         return fieldsName + ")";
@@ -58,7 +58,7 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
         StringBuilder fieldsName = new StringBuilder();
         for (Field field : (List<Field>) entityMetaData.getFieldsWithoutId()
         ) {
-            fieldsName = fieldsName.append(field.getName()).append(" = ? ");
+            fieldsName.append(field.getName()).append(" = ? ");
         }
         return "update " + entityMetaData.getName() + " set " + fieldsName + " where " + entityMetaData.getIdField().getName() + " = ?";
     }
