@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form action="putMoney" method="post" th:object="${moneyBoxDTO}">
+    <fieldset>
+        <p>Введите количество купюр в купюроприемники:</p>
+        <div th:if="*{listOfMoneyBox.size() > 0}">
+            <table>
+                <tr th:each="mb, stat: *{listOfMoneyBox}">
+                    <td th:text="'Денежный ящик: номинал = '+ ${mb.value.getTypeOfBanknote().getValue()}+ ', валюта = '+ ${mb.value.getTypeOfBanknote().getCurrency()}"></td>
+                    <td><input th:field="*{listOfValue[__${stat.index}__]}" type="number"/></td>
+                </tr>
+            </table>
+        </div>
+        <input type="submit" value="Внести"/>
+    </fieldset>
+</form>
+<div th:if="${isError}">
+    <div style="color:red;">Not free place in moneybox</div>
+</div>
+<form action="main" method="post">
+    <input type="submit" value="Назад"/>
+</form>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+Баланс в банкомате: <p th:text="${balance}">Balance</p>
+<p>Выберете действие:</p>
+<div class="container">
+    <div class="item">
+        <form action="putMoney" method="post">
+            <input type="submit" value="Внести деньги"/>
+        </form>
+    </div>
+    <div class="item">
+        <form action="getMoney" method="post">
+            <input type="submit" value="Снять деньги"/>
+        </form>
+    </div>
+</div>
+<style>
+     .container {
+        display: flex;
+        flex-direction: row;
+     }
+     .item:not(:last-child) {
+        margin-right: 10px;
+     }
+    </style>
+</body>
+</html>
