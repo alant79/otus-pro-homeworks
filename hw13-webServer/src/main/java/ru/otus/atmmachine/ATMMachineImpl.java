@@ -1,7 +1,7 @@
-package ru.otus.atmMachine;
+package ru.otus.atmmachine;
 
 import ru.otus.Banknote;
-import ru.otus.moneyBox.MoneyBoxImpl;
+import ru.otus.moneybox.MoneyBoxImpl;
 import ru.otus.Currency;
 
 import java.util.*;
@@ -81,14 +81,12 @@ public class ATMMachineImpl implements ATMMachine {
         Collections.sort(listMoneyBox, new Comparator<MoneyBoxImpl>() {
             @Override
             public int compare(MoneyBoxImpl lhs, MoneyBoxImpl rhs) {
-                // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
-                return lhs.getTypeOfBanknote().getValue() > rhs.getTypeOfBanknote().getValue() ? -1 :
-                        (lhs.getTypeOfBanknote().getValue() < rhs.getTypeOfBanknote().getValue()) ? 1 : 0;
+                return Integer.compare(rhs.getTypeOfBanknote().getValue(), lhs.getTypeOfBanknote().getValue());
             }
         });
     }
 
-    public ArrayList<MoneyBoxImpl> getListMoneyBox() {
+    public List<MoneyBoxImpl> getListMoneyBox() {
         return listMoneyBox;
     }
 }

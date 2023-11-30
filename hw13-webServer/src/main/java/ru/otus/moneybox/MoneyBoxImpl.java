@@ -1,4 +1,4 @@
-package ru.otus.moneyBox;
+package ru.otus.moneybox;
 
 import ru.otus.Banknote;
 

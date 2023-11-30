@@ -1,8 +1,8 @@
-package ru.otus.atmMachine;
+package ru.otus.atmmachine;
 
 import ru.otus.Banknote;
 import ru.otus.Currency;
-import ru.otus.moneyBox.MoneyBoxImpl;
+import ru.otus.moneybox.MoneyBoxImpl;
 
 import java.util.Map;
 

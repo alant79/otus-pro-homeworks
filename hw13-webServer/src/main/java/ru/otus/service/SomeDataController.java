@@ -3,16 +3,14 @@ package ru.otus.service;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.otus.Banknote;
 import ru.otus.Currency;
 import ru.otus.MoneyBoxDTO;
-import ru.otus.atmMachine.ATMMachineImpl;
-import ru.otus.moneyBox.MoneyBox;
-import ru.otus.moneyBox.MoneyBoxImpl;
+import ru.otus.atmmachine.ATMMachineImpl;
+import ru.otus.moneybox.MoneyBox;
+import ru.otus.moneybox.MoneyBoxImpl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 

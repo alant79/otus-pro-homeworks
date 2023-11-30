@@ -1,14 +1,15 @@
 package ru.otus;
 
-import ru.otus.moneyBox.MoneyBox;
+import ru.otus.moneybox.MoneyBox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MoneyBoxDTO {
     private Map<Integer, MoneyBox> listOfMoneyBox = new HashMap<>();
-    private ArrayList<Integer> listOfValue = new ArrayList<>();
+    private List<Integer> listOfValue = new ArrayList<>();
 
     public void addMoneyBox(MoneyBox moneyBox, Integer idx) {
         this.listOfMoneyBox.put(idx, moneyBox);
@@ -23,11 +24,11 @@ public class MoneyBoxDTO {
         this.listOfMoneyBox = listOfMoneyBox;
     }
 
-    public ArrayList<Integer> getListOfValue() {
+    public List<Integer> getListOfValue() {
         return listOfValue;
     }
 
-    public void setListOfValue(ArrayList<Integer> listOfValue) {
+    public void setListOfValue(List<Integer> listOfValue) {
         this.listOfValue = listOfValue;
     }
 }
