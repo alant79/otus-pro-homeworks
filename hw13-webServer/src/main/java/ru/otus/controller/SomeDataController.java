@@ -1,4 +1,4 @@
-package ru.otus.service;
+package ru.otus.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,13 +46,13 @@ public class SomeDataController {
 
     @PostMapping(value = "putMoney")
     public String putMoney(Model model, MoneyBoxDTO moneyBoxDTO) {
-        Boolean isError = false;
+        boolean isError = false;
         MoneyBoxDTO newMoneyBoxDTO = new MoneyBoxDTO();
-        Integer idx = 0;
+        int idx = 0;
         for (MoneyBox moneyBox : atmMachine.getListMoneyBox()) {
             newMoneyBoxDTO.addMoneyBox(moneyBox, idx++);
         }
-        if (moneyBoxDTO != null && newMoneyBoxDTO.getListOfMoneyBox() != null && moneyBoxDTO.getListOfValue().size() > 0) {
+        if (moneyBoxDTO != null && newMoneyBoxDTO.getListOfMoneyBox() != null && !moneyBoxDTO.getListOfValue().isEmpty()) {
             try {
                 Map<Banknote, Integer> packageOfMoney = new HashMap<>();
                 for (Map.Entry<Integer, MoneyBox> moneyBox : newMoneyBoxDTO.getListOfMoneyBox().entrySet()) {
@@ -71,7 +71,7 @@ public class SomeDataController {
 
     @PostMapping(value = "getMoney")
     public String getMoney(Model model, Integer sum) {
-        Boolean isError = false;
+        boolean isError = false;
         Map<Banknote, Integer> packageOfMoney = new HashMap<>();
         if (sum != null && sum > 0) {
             try {
