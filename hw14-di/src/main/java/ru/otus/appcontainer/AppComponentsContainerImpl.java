@@ -16,6 +16,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
     private final List<Object> appComponents = new ArrayList<>();
     private final Map<String, Object> appComponentsByName = new HashMap<>();
+    private final static String pack = "ru.otus";
 
     private Map<Class, Object> createdObjects = null;
     private Map<Class, Integer> orderClasses = null;
@@ -62,10 +63,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         });
     }
 
-    private void processConfig(Class<?> configClass) {
-        checkConfigClass(configClass);
-        Map<NamesBean, Integer> mapWirhOrders = new HashMap<>();
-        Map<String, String> mapWirhOrdersForNames = new HashMap<>();
+    private void prepareMaps(Class<?> configClass, Map<String, String> mapWirhOrdersForNames, Map<NamesBean, Integer> mapWirhOrders) {
         Method methods[] = configClass.getDeclaredMethods();
         for (Method method : methods
         ) {
@@ -82,6 +80,9 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
                 mapWirhOrdersForNames.put(method.getReturnType().getSimpleName(), an.name());
             }
         }
+    }
+
+    private void fillAppComponents(Class<?> configClass, Map<String, String> mapWirhOrdersForNames, Map<NamesBean, Integer> mapWirhOrders) {
         mapWirhOrders.entrySet().stream().sorted(Map.Entry.<NamesBean, Integer>comparingByValue()).forEach(en -> {
             try {
                 String packName = configClass.getPackageName();
@@ -89,7 +90,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
                     packName += ".config";
                 }
                 Class clInt = Class.forName(packName.replace("config", "services") + "." + en.getKey().nameReturnParam);
-                Set<Class> classes = new Reflections("ru.otus").getSubTypesOf(clInt);
+                Set<Class> classes = new Reflections(pack).getSubTypesOf(clInt);
                 if (classes.isEmpty()) {
                     throw new RuntimeException();
                 }
@@ -101,6 +102,14 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    private void processConfig(Class<?> configClass) {
+        checkConfigClass(configClass);
+        Map<NamesBean, Integer> mapWirhOrders = new HashMap<>();
+        Map<String, String> mapWirhOrdersForNames = new HashMap<>();
+        prepareMaps(configClass, mapWirhOrdersForNames, mapWirhOrders);
+        fillAppComponents(configClass, mapWirhOrdersForNames, mapWirhOrders);
     }
 
     private void checkConfigClass(Class<?> configClass) {
@@ -160,6 +169,28 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         return obj;
     }
 
+    private void prepareParamsForConstructor(Class[] params, List<Object> paramsForCreate) {
+        for (Class param : params) {
+            if (param == PrintStream.class) {
+                paramsForCreate.add(System.out);
+            } else if (param == InputStream.class) {
+                paramsForCreate.add(System.in);
+            } else {
+                Set<Class> classes = new Reflections(pack).getSubTypesOf(param);
+                if (classes.isEmpty()) {
+                    throw new RuntimeException();
+                }
+                Class cl = classes.iterator().next();
+                for (Map.Entry<Class, Object> paramObj : createdObjects.entrySet()) {
+                    if (paramObj.getKey() == cl) {
+                        paramsForCreate.add(paramObj.getValue());
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     private <C> Object createObject(Class<C> componentClass) {
         List<Object> paramsForCreate = new ArrayList<>();
         Constructor[] constructors = componentClass.getDeclaredConstructors();
@@ -176,25 +207,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
                 throw new RuntimeException(e);
             }
         } else {
-            for (Class param : params) {
-                if (param == PrintStream.class) {
-                    paramsForCreate.add(System.out);
-                } else if (param == InputStream.class) {
-                    paramsForCreate.add(System.in);
-                } else {
-                    Set<Class> classes = new Reflections("ru.otus").getSubTypesOf(param);
-                    if (classes.isEmpty()) {
-                        throw new RuntimeException();
-                    }
-                    Class cl = classes.iterator().next();
-                    for (Map.Entry<Class, Object> paramObj : createdObjects.entrySet()) {
-                        if (paramObj.getKey() == cl) {
-                            paramsForCreate.add(paramObj.getValue());
-                            break;
-                        }
-                    }
-                }
-            }
+            prepareParamsForConstructor(params, paramsForCreate);
             try {
                 C obj = (C) constructors[0].newInstance(paramsForCreate.toArray());
                 createdObjects.put(componentClass, obj);
