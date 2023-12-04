@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form action="getMoney" method="post">
+    <fieldset>
+        <p>Введите сумму:</p>
+        <input type="number" name="sum"/>
+        <input type="submit" value="Снять деньги"/>
+    </fieldset>
+</form>
+<div th:if="${isError}">
+    <div style="color:red;">Not enough money in ATM machine</div>
+</div>
+<div th:if="${packageOfMoney.size() > 0}">
+    <p>Вы получили:</p>
+    <table>
+        <tr th:each="moneyBox : ${packageOfMoney}">
+            <td th:text="${moneyBox.key}"></td>
+            <td th:text="' - ' + ${moneyBox.value} + ' шт.;'"></td>
+        </tr>
+    </table>
+</div>
+<form action="main" method="post">
+    <input type="submit" value="Назад"/>
+</form>
+</body>
+</html>
